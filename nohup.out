@@ -1,0 +1,82 @@
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+
+(guake:11384): libglade-WARNING **: unknown attribute `swapped' for <signal>.
+[32mINFO    [0m Logging configuration complete[0m
+[36mDEBUG   [0m do not set background from user[0m
+/usr/local/lib/python2.7/dist-packages/guake/guake_app.py:883: GtkWarning: IA__gtk_window_set_type_hint: assertion '!gtk_widget_get_mapped (GTK_WIDGET (window))' failed
+  self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_DOCK)
+/usr/local/lib/python2.7/dist-packages/guake/guake_app.py:884: GtkWarning: IA__gtk_window_set_type_hint: assertion '!gtk_widget_get_mapped (GTK_WIDGET (window))' failed
+  self.window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_NORMAL)
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
+[36mDEBUG   [0m do not set background from user[0m
