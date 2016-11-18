@@ -109,14 +109,14 @@ def read_images_from_disk(input_queue):
     return example, label
   
 def read_and_augument_data(image_list, label_list, image_size, batch_size, max_nrof_epochs, 
-        random_crop, random_flip, nrof_preprocess_threads):
+        random_crop, random_flip, nrof_preprocess_threads, shuffle=True):
     
     images = ops.convert_to_tensor(image_list, dtype=tf.string)
     labels = ops.convert_to_tensor(label_list, dtype=tf.int32)
     
     # Makes an input queue
     input_queue = tf.train.slice_input_producer([images, labels],
-        num_epochs=max_nrof_epochs, shuffle=True)
+        num_epochs=max_nrof_epochs, shuffle=shuffle)
 
     images_and_labels = []
     for _ in range(nrof_preprocess_threads):
@@ -165,7 +165,7 @@ def _add_loss_summaries(total_loss):
   
     return loss_averages_op
 
-def train(total_loss, global_step, optimizer, learning_rate, moving_average_decay, update_gradient_vars):
+def train(total_loss, global_step, optimizer, learning_rate, moving_average_decay, update_gradient_vars, log_histograms=True):
     # Generate moving averages of all losses and associated summaries.
     loss_averages_op = _add_loss_summaries(total_loss)
 
@@ -190,13 +190,15 @@ def train(total_loss, global_step, optimizer, learning_rate, moving_average_deca
     apply_gradient_op = opt.apply_gradients(grads, global_step=global_step)
   
     # Add histograms for trainable variables.
-    for var in tf.trainable_variables():
-        tf.histogram_summary(var.op.name, var)
+    if log_histograms:
+        for var in tf.trainable_variables():
+            tf.histogram_summary(var.op.name, var)
    
     # Add histograms for gradients.
-    for grad, var in grads:
-        if grad is not None:
-            tf.histogram_summary(var.op.name + '/gradients', grad)
+    if log_histograms:
+        for grad, var in grads:
+            if grad is not None:
+                tf.histogram_summary(var.op.name + '/gradients', grad)
   
     # Track the moving averages of all trainable variables.
     variable_averages = tf.train.ExponentialMovingAverage(
@@ -285,12 +287,16 @@ def get_triplet_batch(triplets, batch_index, batch_size):
     return batch
 
 def select_triplets(embeddings, num_per_class, image_data, people_per_batch, alpha):
-
-    def dist(emb1, emb2):
-        x = np.square(np.subtract(emb1, emb2))
-        return np.sum(x, 0)
-  
+    """ Select the triplets for training
+    This is v1 of the triplet_selection function using pre-calculated distance matrix.
+    """
     nrof_images = image_data.shape[0]
+
+    # distance matrix
+    dists = np.zeros((nrof_images, nrof_images))
+    for i in np.arange(0, nrof_images):
+        dists[i] = np.sum(np.square(np.subtract(embeddings, embeddings[i])), 1)
+
     nrof_triplets = nrof_images - people_per_batch
     shp = [nrof_triplets, image_data.shape[1], image_data.shape[2], image_data.shape[3]]
     as_arr = np.zeros(shp)
@@ -298,10 +304,15 @@ def select_triplets(embeddings, num_per_class, image_data, people_per_batch, alp
     ns_arr = np.zeros(shp)
     
     trip_idx = 0
+    # shuffle the triplets index
     shuffle = np.arange(nrof_triplets)
     np.random.shuffle(shuffle)
     emb_start_idx = 0
     nrof_random_negs = 0
+
+    # Max int
+    maxInt = 2**32
+
     for i in xrange(people_per_batch):
         n = num_per_class[i]
         for j in range(1,n):
@@ -310,35 +321,35 @@ def select_triplets(embeddings, num_per_class, image_data, people_per_batch, alp
             as_arr[shuffle[trip_idx]] = image_data[a_idx]
             ps_arr[shuffle[trip_idx]] = image_data[p_idx]
       
-            # Select a semi-hard negative that has a distance
-            #  further away from the positive exemplar.
-            pos_dist = dist(embeddings[a_idx][:], embeddings[p_idx][:])
+            pos_dist = dists[a_idx, p_idx]
             sel_neg_idx = emb_start_idx
-            while sel_neg_idx>=emb_start_idx and sel_neg_idx<=emb_start_idx+n-1:
-                sel_neg_idx = (np.random.randint(1, 2**32) % nrof_images) - 1
-                #sel_neg_idx = np.random.random_integers(0, nrof_images-1)
-            sel_neg_dist = dist(embeddings[a_idx][:], embeddings[sel_neg_idx][:])
-      
+
+            while sel_neg_idx >= emb_start_idx and sel_neg_idx <= emb_start_idx + n - 1:
+                sel_neg_idx = (np.random.randint(1, maxInt) % nrof_images) - 1
+
+            sel_neg_dist = dists[a_idx, sel_neg_idx]
+
             random_neg = True
             for k in range(nrof_images):
-                if k<emb_start_idx or k>emb_start_idx+n-1:
-                    neg_dist = dist(embeddings[a_idx][:], embeddings[k][:])
-                    if pos_dist<neg_dist and neg_dist<sel_neg_dist and np.abs(pos_dist-neg_dist)<alpha:
+                # skip if the index is within the positive (same person) class range.
+                if k < emb_start_idx or k > emb_start_idx + n - 1:
+                    neg_dist = dists[a_idx, k]
+                    if pos_dist < neg_dist and neg_dist < sel_neg_dist and np.abs(pos_dist - neg_dist) < alpha:
                         random_neg = False
                         sel_neg_dist = neg_dist
                         sel_neg_idx = k
-            
+
             if random_neg:
                 nrof_random_negs += 1
-              
+
             ns_arr[shuffle[trip_idx]] = image_data[sel_neg_idx]
             #print('Triplet %d: (%d, %d, %d), pos_dist=%2.3f, neg_dist=%2.3f, sel_neg_dist=%2.3f' % (trip_idx, a_idx, p_idx, sel_neg_idx, pos_dist, neg_dist, sel_neg_dist))
             trip_idx += 1
-          
+
         emb_start_idx += n
-    
+
     triplets = (as_arr, ps_arr, ns_arr)
-    
+
     return triplets, nrof_random_negs, nrof_triplets
 
 def get_learning_rate_from_file(filename, epoch):
