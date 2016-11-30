@@ -156,7 +156,6 @@ def main(args):
         tf.train.start_queue_runners(sess=sess)
 
         with sess.as_default():
-
             if pretrained_model:
                 print('Restoring pretrained model: %s' % pretrained_model)
                 saver.restore(sess, pretrained_model)

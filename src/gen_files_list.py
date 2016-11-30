@@ -5,7 +5,7 @@ and is user for image_preloader with mode='file'
 import os
 from PIL import Image
 import numpy as np
-import info
+
 
 
 def gen_files_list(data_path, write_file,filesOnly = False):
@@ -37,6 +37,6 @@ def gen_files_list(data_path, write_file,filesOnly = False):
 
 
 if __name__ == '__main__':
-    data_dir = '/home/zach/Documents/fer2013/100/'
+    data_dir = '/home/zach/Documents/fer2013/all_yall/'
     write_files_name = "./files_only"
-    gen_files_list(data_dir, write_files_name,filesOnly = True)
+    gen_files_list(data_dir, write_files_name,filesOnly = False)

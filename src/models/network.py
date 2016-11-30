@@ -47,6 +47,7 @@ def conv(inpOp, nIn, nOut, kH, kW, dH, dW, padType, name, phase_train=True, use_
         biases = tf.get_variable("biases", [nOut], initializer=tf.constant_initializer(), dtype=inpOp.dtype)
         bias = tf.nn.bias_add(conv_bn, biases)
         conv1 = tf.nn.relu(bias)
+        
     return conv1
 
 def affine(inpOp, nIn, nOut, name, weight_decay=0.0):
@@ -163,7 +164,7 @@ def inception(inp, inSize, ks, o1s, o2s1, o2s2, o3s1, o3s2, o4s1, o4s2, o4s3, po
     # print()
     
     net = []
-    phase_train = False
+    
     with tf.variable_scope(name):
         with tf.variable_scope('branch1_1x1'):
             if o1s>0:
